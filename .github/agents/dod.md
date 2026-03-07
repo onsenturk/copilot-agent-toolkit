@@ -114,3 +114,22 @@ Ask:
 - Does this introduce future technical debt?
 
 If yes — fix it before marking done.
+
+---
+
+## 11. Public Publishing & Netlify Readiness
+
+For any project published to Netlify or exposed as a public web experience, the following must be in place before release:
+
+- Landing page includes basic SEO metadata (title, description, canonical URL, Open Graph/Twitter metadata where applicable).
+- Landing page content clearly describes the product, owner, and intended use.
+- Sitemap/robots handling reviewed for the intended indexing behavior.
+- Public repository link included on the site when the repository is intended to be public.
+- Privacy Policy published and linked from the landing page or footer.
+- Privacy Policy clearly explains what data is collected, how it is used, how long it is retained, and any third-party processors/services involved.
+- Privacy Policy includes appropriate disclaimer and limitation-of-liability language for the site/operator, with legal review recommended before production use.
+- End User Agreement / Terms of Use published and linked from the site.
+- End User Agreement explicitly requires user acceptance of the Privacy Policy and any data usage terms before use where legally or operationally required.
+- Data usage disclosure is published in a user-facing form, covering analytics, cookies, telemetry, contact submissions, and any model/training-related usage if applicable.
+- Netlify-specific publishing settings reviewed (custom domain, HTTPS, redirects, headers, form handling, analytics, and environment variable exposure).
+- All legal/documentation links are visible and functional in the deployed experience.
