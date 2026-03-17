@@ -15,10 +15,34 @@ This repo defines a **delivery framework** that ensures Copilot-generated change
 
 In short: this repository is a **policy + process layer** for implementation quality, security, architecture discipline, and documentation completeness.
 
+## MCP Servers
+
+This workspace is configured with the following MCP (Model Context Protocol) servers in `.vscode/mcp.json`:
+
+| Server | Package | Purpose |
+|---|---|---|
+| **Work IQ** | `@microsoft/workiq` | Query Microsoft 365 data — emails, meetings, documents, Teams messages, and people |
+| **Playwright** | `@playwright/mcp` | Browser automation, testing, screenshots, and web interaction |
+| **Sequential Thinking** | `@modelcontextprotocol/server-sequential-thinking` | Structured reasoning for complex planning and architecture decisions |
+
+Additionally, the following MCP servers are configured at user/profile level:
+
+| Server | Purpose |
+|---|---|
+| **Azure** | Azure resource management, deployment, diagnostics, and best practices |
+| **Bicep** | Bicep file authoring, validation, and ARM template decompilation |
+| **GitHub** | GitHub operations — issues, PRs, repos, branches, files, releases, search |
+| **Microsoft Docs** | Microsoft Learn documentation search, code sample search, and page fetch |
+| **PostgreSQL** | PostgreSQL database querying, schema exploration, and dashboards |
+| **Pylance** | Python language features — docs, imports, refactoring, syntax errors |
+| **Foundry** | Microsoft Foundry agent management — deploy, evaluate, optimize prompts |
+
 ## Repository structure
 
 ```text
 .
+├── .vscode/
+│   └── mcp.json
 ├── copilot-instructions.md
 └── agents/
     ├── engineering-standards.md
