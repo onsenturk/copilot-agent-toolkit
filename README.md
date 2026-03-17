@@ -41,23 +41,33 @@ Additionally, the following MCP servers are configured at user/profile level:
 
 ```text
 .
-├── .vscode/
-│   └── mcp.json
-├── copilot-instructions.md
-└── agents/
-    ├── engineering-standards.md
-    ├── dod.md
-    ├── feature-request-template.md
-    └── change-request-template.md
+├── .github/
+│   ├── copilot-instructions.md          # Orchestration — references agents, defines workflow
+│   └── agents/
+│       ├── engineering-standards.md      # Architecture, security, infra, AI/ML standards
+│       ├── dod.md                        # Definition of Done checklist
+│       ├── feature-request-template.md   # New feature implementation template
+│       └── change-request-template.md    # Bug fix / refactor / modification template
+└── .vscode/
+    └── mcp.json                          # Workspace MCP server configuration
 ```
+
+## Agents
+
+| Agent | Invoke with | Purpose |
+|---|---|---|
+| **Engineering Standards** | `@engineering-standards` | Review architecture, security, infrastructure, and coding compliance |
+| **Definition of Done** | `@dod` | Validate task completion before marking done |
+| **Feature Request** | `@feature-request-template` | Structured template for implementing new features |
+| **Change Request** | `@change-request-template` | Structured template for bug fixes, refactors, and modifications |
 
 ## How to use it
 
-1. Start with either a feature or change request template in `agents/`.
-2. Ensure requirements are explicit, testable, and scoped.
-3. Follow the mandatory workflow from `copilot-instructions.md`.
-4. Implement changes only after impact, security, architecture, and infrastructure analysis.
-5. Validate completion against `agents/dod.md` before marking work done.
+1. Use `@feature-request-template` or `@change-request-template` to scope work.
+2. Copilot will follow the mandatory workflow from `copilot-instructions.md`.
+3. Implementation only begins after impact, security, architecture, and infrastructure analysis.
+4. Use `@dod` to validate completion before marking work done.
+5. Use `@engineering-standards` to review compliance at any point.
 
 ## Core principles enforced
 

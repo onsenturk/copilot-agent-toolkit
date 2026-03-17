@@ -1,3 +1,7 @@
+---
+description: "Reviews architecture, security, infrastructure, and coding compliance. Use to validate designs or check standards."
+---
+
 # Engineering Standards
 
 This document defines non-negotiable engineering standards for this repository.
@@ -11,7 +15,7 @@ All code, documentation, infrastructure, and deployments must comply.
 
 - Azure is the default and only cloud provider unless explicitly approved.
 - Prefer managed services over self-hosted infrastructure.
-- Infrastructure must be defined using Bicep or Terraform, which relies on Azure Verified Modules (AVM) best practices
+- **Bicep is the primary IaC language.** Terraform is acceptable when Bicep is not feasible or when the team has existing Terraform investment. Both must follow Azure Verified Modules (AVM) best practices.
 - No AWS/GCP services unless explicitly required and documented.
 
 Default service choices:
@@ -58,6 +62,30 @@ Default service choices:
 - No direct backend calls inside UI components.
 - State management must be centralized and consistent.
 - No ad-hoc global state.
+
+### AI & Agent Architecture
+
+- AI service calls must be isolated behind a service/adapter layer.
+- Prompts and system instructions must be stored as versioned assets, not hardcoded in application logic.
+- Model configuration (model name, temperature, tokens) must be externalized to configuration or environment variables.
+- Agent workflows must have observability: trace IDs, token usage logging, and latency metrics.
+- Use Azure AI Foundry / Microsoft Foundry for managed agent deployments when applicable.
+- AI responses must be validated before passing to downstream systems (guard against hallucination, injection, and malformed output).
+
+### API Versioning
+
+- Public APIs must use URL path versioning (e.g., `/api/v1/resource`).
+- Breaking changes require a new version — never modify an existing version's contract.
+- Deprecated versions must return a `Sunset` header with a removal date.
+- Internal APIs may use header-based versioning if justified.
+
+### Error Handling
+
+- All APIs must return a consistent error response format: `{ "error": { "code": "...", "message": "..." } }`.
+- Do not expose stack traces or internal details in production error responses.
+- Use typed exceptions in domain/service layers — catch and map at the API boundary.
+- Transient failures to external services must use retry with exponential backoff (Polly, tenacity, or equivalent).
+- Log errors with full context (correlation ID, operation, input summary) but never log sensitive data.
 
 ---
 
@@ -124,6 +152,14 @@ If any required documentation is missing, the project is incomplete.
 - No destructive schema changes without migration plan.
 - Default to simplest viable solution.
 - Do not introduce microservices without strong justification.
+
+### Accessibility
+
+- Web applications must meet WCAG 2.1 Level AA.
+- All interactive elements must be keyboard-navigable.
+- Images and icons must have appropriate alt text.
+- Color must not be the sole means of conveying information.
+- Mobile applications must support platform accessibility features (VoiceOver, TalkBack).
 
 ---
 

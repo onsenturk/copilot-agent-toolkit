@@ -1,3 +1,7 @@
+---
+description: "Validates completion of any task. Run this checklist before marking work as done."
+---
+
 # Definition of Done (DoD)
 
 A feature, fix, or change is NOT complete unless ALL of the following are satisfied.
@@ -52,6 +56,13 @@ Security review must be explicit, not assumed.
 - No flaky tests introduced.
 
 If no tests exist, add minimal coverage for new logic.
+
+### CI/CD Validation
+
+- CI pipeline passes (build, lint, test).
+- No new warnings introduced without justification.
+- PR checks are green before merge.
+- Branch protection rules respected.
 
 ---
 
@@ -117,9 +128,11 @@ If yes — fix it before marking done.
 
 ---
 
-## 11. Public Publishing & Netlify Readiness
+## 11. Public Publishing Readiness
 
-For any project published to Netlify or exposed as a public web experience, the following must be in place before release:
+> This section applies **only** when publishing to a public web experience (e.g., Netlify, Azure Static Web Apps, Vercel). Skip if not applicable.
+
+The following must be in place before release:
 
 - Landing page includes basic SEO metadata (title, description, canonical URL, Open Graph/Twitter metadata where applicable).
 - Landing page content clearly describes the product, owner, and intended use.
@@ -131,5 +144,14 @@ For any project published to Netlify or exposed as a public web experience, the 
 - End User Agreement / Terms of Use published and linked from the site.
 - End User Agreement explicitly requires user acceptance of the Privacy Policy and any data usage terms before use where legally or operationally required.
 - Data usage disclosure is published in a user-facing form, covering analytics, cookies, telemetry, contact submissions, and any model/training-related usage if applicable.
-- Netlify-specific publishing settings reviewed (custom domain, HTTPS, redirects, headers, form handling, analytics, and environment variable exposure).
+- Platform-specific publishing settings reviewed (custom domain, HTTPS, redirects, headers, form handling, analytics, and environment variable exposure).
 - All legal/documentation links are visible and functional in the deployed experience.
+
+---
+
+## 12. Accessibility
+
+- Web UI meets WCAG 2.1 Level AA (if applicable).
+- Interactive elements are keyboard-navigable.
+- Screen reader compatibility verified for key flows.
+- Color contrast ratios meet minimum thresholds.

@@ -1,3 +1,7 @@
+---
+description: "Template for modifying existing behavior — bug fixes, refactors, performance improvements, or breaking changes."
+---
+
 # Change Request
 
 ## 1. Summary

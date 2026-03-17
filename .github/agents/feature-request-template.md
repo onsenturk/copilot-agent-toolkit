@@ -1,3 +1,7 @@
+---
+description: "Template for implementing new features. Use when adding a new capability or user-facing functionality."
+---
+
 # Feature Request
 
 ## 1. Summary
@@ -17,7 +21,16 @@ Each requirement must be independently verifiable.
 
 ---
 
-## 3. Non-Functional Requirements
+## 3. Acceptance Criteria
+
+Define testable conditions that confirm the feature works as intended.
+
+- **Given** [precondition], **when** [action], **then** [expected result].
+- **Given** [precondition], **when** [action], **then** [expected result].
+
+---
+
+## 4. Non-Functional Requirements
 
 - Performance expectations:
 - Security requirements:
@@ -27,7 +40,7 @@ Each requirement must be independently verifiable.
 
 ---
 
-## 4. Constraints
+## 5. Constraints
 
 - Must comply with agents/engineering-standards.md
 - Must satisfy agents/dod.md
