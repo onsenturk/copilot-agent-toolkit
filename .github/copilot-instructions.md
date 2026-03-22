@@ -25,6 +25,8 @@ These rules are non-negotiable. If a request conflicts with these standards:
 |---|---|
 | `@implementation-template` | Implementing a new feature, fixing a bug, refactoring, or modifying existing behavior |
 | `@engineering-standards` | Reviewing architecture, security, or infrastructure compliance |
+| `@ux` | Implementing any UI/frontend work — applies opinionated design patterns, component selection, and layout decisions automatically |
+| `@marketing` | Monetization modeling — run on-demand to analyze cost structure and generate conservative revenue projections to `marketing.md` |
 | `@dod` | Validating completion of any task before marking done |
 
 ---
