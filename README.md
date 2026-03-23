@@ -48,8 +48,12 @@ Additionally, the following MCP servers are configured at user/profile level:
 │       ├── dod.md                        # Definition of Done checklist
 │       ├── feature-request-template.md   # New feature implementation template
 │       └── change-request-template.md    # Bug fix / refactor / modification template
-└── .vscode/
-    └── mcp.json                          # Workspace MCP server configuration
+├── .vscode/
+│   ├── extensions.json                  # Recommended VS Code extensions
+│   └── mcp.json                         # Workspace MCP server configuration
+└── scripts/
+    ├── init-setup.ps1                   # Windows setup script
+    └── init-setup.sh                    # macOS/Linux setup script
 ```
 
 ## Agents
@@ -60,6 +64,42 @@ Additionally, the following MCP servers are configured at user/profile level:
 | **Definition of Done** | `@dod` | Validate task completion before marking done |
 | **Feature Request** | `@feature-request-template` | Structured template for implementing new features |
 | **Change Request** | `@change-request-template` | Structured template for bug fixes, refactors, and modifications |
+
+## Getting Started (New Machine / Fresh Clone)
+
+### Prerequisites
+
+- **VS Code** with the CLI on PATH (`code` command)
+- **GitHub Copilot** license
+
+### Automated Setup
+
+**Windows (PowerShell):**
+```powershell
+.\scripts\init-setup.ps1            # full setup
+.\scripts\init-setup.ps1 -DryRun    # preview changes without applying
+```
+
+**macOS / Linux (Bash):**
+```bash
+chmod +x scripts/init-setup.sh
+./scripts/init-setup.sh              # full setup
+./scripts/init-setup.sh --dry-run    # preview changes without applying
+```
+
+The script will:
+1. Install recommended VS Code extensions (Copilot, Azure, Bicep, Pylance, PostgreSQL, Foundry)
+2. Register user-level MCP servers (GitHub MCP, Microsoft Docs MCP) if not already configured
+3. Validate the workspace config files exist
+
+Use `--skip-extensions` or `--skip-mcp` to skip individual steps.
+
+### Manual Setup (if you prefer)
+
+1. Install the extensions listed in `.vscode/extensions.json` (VS Code will prompt on first open)
+2. Add these to your user-level `mcp.json` (File > Preferences > MCP Servers, or via MCP Gallery):
+   - **GitHub MCP** — `https://api.githubcopilot.com/mcp/`
+   - **Microsoft Docs MCP** — `https://learn.microsoft.com/api/mcp`
 
 ## How to use it
 

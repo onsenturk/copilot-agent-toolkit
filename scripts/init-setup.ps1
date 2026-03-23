@@ -1,0 +1,156 @@
+<#
+.SYNOPSIS
+    Initializes a fresh development environment for GHCP_SD_Agent.
+
+.DESCRIPTION
+    - Installs recommended VS Code extensions
+    - Registers user-level MCP servers (GitHub, Microsoft Docs) if not already present
+    - Validates the workspace MCP config exists
+
+.NOTES
+    Run from the repository root: .\scripts\init-setup.ps1
+#>
+
+param(
+    [switch]$SkipExtensions,
+    [switch]$SkipMcp,
+    [switch]$DryRun
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+function Write-Step { param([string]$Message) Write-Host "`n>> $Message" -ForegroundColor Cyan }
+function Write-Ok   { param([string]$Message) Write-Host "   [OK] $Message" -ForegroundColor Green }
+function Write-Warn { param([string]$Message) Write-Host "   [WARN] $Message" -ForegroundColor Yellow }
+function Write-Err  { param([string]$Message) Write-Host "   [FAIL] $Message" -ForegroundColor Red }
+
+# ─── Prerequisites ───────────────────────────────────────────────────────────
+
+Write-Step "Checking prerequisites"
+
+# VS Code CLI
+$code = Get-Command code -ErrorAction SilentlyContinue
+if ($code) { Write-Ok "VS Code CLI available" } else { Write-Warn "VS Code CLI (code) not on PATH — extension install will be skipped." }
+
+# ─── VS Code Extensions ─────────────────────────────────────────────────────
+
+$extensions = @(
+    "github.copilot",
+    "github.copilot-chat",
+    "github.vscode-pull-request-github",
+    "ms-azuretools.vscode-azure-github-copilot",
+    "ms-azuretools.vscode-bicep",
+    "ms-python.vscode-pylance",
+    "ms-ossdata.vscode-postgresql",
+    "ms-windows-ai-studio.windows-ai-studio"
+)
+
+if (-not $SkipExtensions -and $code) {
+    Write-Step "Installing recommended VS Code extensions"
+    $installed = & code --list-extensions 2>$null
+    foreach ($ext in $extensions) {
+        if ($installed -contains $ext) {
+            Write-Ok "$ext (already installed)"
+        } else {
+            if ($DryRun) {
+                Write-Host "   [DRY-RUN] Would install $ext" -ForegroundColor Magenta
+            } else {
+                Write-Host "   Installing $ext ..." -ForegroundColor Gray
+                & code --install-extension $ext --force 2>$null | Out-Null
+                Write-Ok "$ext"
+            }
+        }
+    }
+} elseif ($SkipExtensions) {
+    Write-Step "Skipping VS Code extensions (-SkipExtensions)"
+} else {
+    Write-Step "Skipping VS Code extensions (code CLI not found)"
+}
+
+# ─── User-level MCP servers ─────────────────────────────────────────────────
+
+$userMcpPath = Join-Path $env:APPDATA "Code\User\mcp.json"
+
+# The servers that should exist at user level (not workspace-portable)
+$requiredUserServers = @{
+    "io.github.github/github-mcp-server" = @{
+        type    = "http"
+        url     = "https://api.githubcopilot.com/mcp/"
+        gallery = "https://api.mcp.github.com"
+        version = "0.32.0"
+    }
+    "microsoftdocs/mcp" = @{
+        type    = "http"
+        url     = "https://learn.microsoft.com/api/mcp"
+        gallery = "https://api.mcp.github.com"
+        version = "1.0.0"
+    }
+}
+
+if (-not $SkipMcp) {
+    Write-Step "Configuring user-level MCP servers ($userMcpPath)"
+
+    if (Test-Path $userMcpPath) {
+        $userMcp = Get-Content $userMcpPath -Raw | ConvertFrom-Json -AsHashtable
+    } else {
+        $userMcp = @{ servers = @{}; inputs = @() }
+    }
+
+    if (-not $userMcp.ContainsKey("servers")) { $userMcp["servers"] = @{} }
+
+    $changed = $false
+    foreach ($name in $requiredUserServers.Keys) {
+        if ($userMcp["servers"].ContainsKey($name)) {
+            Write-Ok "$name (already configured)"
+        } else {
+            if ($DryRun) {
+                Write-Host "   [DRY-RUN] Would add $name" -ForegroundColor Magenta
+            } else {
+                $userMcp["servers"][$name] = $requiredUserServers[$name]
+                $changed = $true
+                Write-Ok "$name added"
+            }
+        }
+    }
+
+    if ($changed -and -not $DryRun) {
+        $userMcp | ConvertTo-Json -Depth 10 | Set-Content $userMcpPath -Encoding UTF8
+        Write-Ok "Saved $userMcpPath"
+    }
+} else {
+    Write-Step "Skipping MCP configuration (-SkipMcp)"
+}
+
+# ─── Workspace MCP validation ───────────────────────────────────────────────
+
+Write-Step "Validating workspace configuration"
+
+$workspaceMcp = Join-Path $PSScriptRoot "..\.vscode\mcp.json"
+if (Test-Path $workspaceMcp) {
+    Write-Ok ".vscode/mcp.json exists (workiq, playwright, sequential-thinking)"
+} else {
+    Write-Warn ".vscode/mcp.json not found — workspace MCP servers will not be available"
+}
+
+$copilotInstructions = Join-Path $PSScriptRoot "..\.github\copilot-instructions.md"
+if (Test-Path $copilotInstructions) {
+    Write-Ok ".github/copilot-instructions.md exists"
+} else {
+    Write-Warn ".github/copilot-instructions.md not found"
+}
+
+# ─── Summary ─────────────────────────────────────────────────────────────────
+
+Write-Host "`n" -NoNewline
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  Setup complete!" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Next steps:" -ForegroundColor White
+Write-Host "  1. Open this folder in VS Code" -ForegroundColor Gray
+Write-Host "  2. Accept the recommended extensions prompt (or run: code --install-extension from list)" -ForegroundColor Gray
+Write-Host "  3. Sign in to GitHub Copilot" -ForegroundColor Gray
+Write-Host "  4. (Optional) Sign in to Azure CLI: az login" -ForegroundColor Gray
+Write-Host "  5. Start chatting — use @implementation-template, @dod, @engineering-standards" -ForegroundColor Gray
+Write-Host ""
