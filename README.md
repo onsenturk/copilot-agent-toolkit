@@ -9,7 +9,7 @@ This repo defines a **delivery framework** that ensures Copilot-generated change
 - **10 agents** — specialized Copilot personas for implementation, security, DevOps, architecture, and more
 - **6 instruction files** — auto-applied rules for security, markdown, shell scripts, and context engineering
 - **14 skills** — domain-specific knowledge packs for GitHub Actions, CodeQL, Dependabot, Azure pricing, and more
-- **4 workspace MCP servers** — Work IQ, Playwright, Sequential Thinking, and Awesome Copilot catalog
+- **5 workspace MCP servers** — Work IQ, Playwright, Sequential Thinking, Awesome Copilot catalog, and Microsoft Docs
 - Mandatory engineering rules (`.github/agents/engineering-standards.md`)
 - A strict Definition of Done checklist (`.github/agents/dod.md`)
 - Global Copilot execution instructions (`.github/copilot-instructions.md`)
@@ -37,13 +37,13 @@ Workspace-level servers (`.vscode/mcp.json`) — available automatically when yo
 | **Playwright** | `npx @playwright/mcp` | Browser automation, testing, screenshots, and web interaction |
 | **Sequential Thinking** | `npx @modelcontextprotocol/server-sequential-thinking` | Structured reasoning for complex planning and architecture decisions |
 | **Awesome Copilot** | `docker` (stdio) | Runtime search/load of the [awesome-copilot](https://awesome-copilot.github.com/) community catalog |
+| **Microsoft Docs** | `https://learn.microsoft.com/api/mcp` (http) | Microsoft Learn documentation search, code sample search, and page fetch |
 
 User-level servers (registered by the setup script or manually) — shared across all workspaces:
 
 | Server | Purpose |
 |---|---|
 | **GitHub** | GitHub operations — issues, PRs, repos, branches, files, releases, search |
-| **Microsoft Docs** | Microsoft Learn documentation search, code sample search, and page fetch |
 | **Azure** | Azure resource management, deployment, diagnostics, and best practices |
 | **Bicep** | Bicep file authoring, validation, and ARM template decompilation |
 | **PostgreSQL** | PostgreSQL database querying, schema exploration, and dashboards |
