@@ -37,6 +37,10 @@
 				"ghcr.io/microsoft/mcp-dotnet-samples/awesome-copilot:latest"
 			],
 			"type": "stdio"
+		},
+		"microsoftdocs": {
+			"url": "https://learn.microsoft.com/api/mcp",
+			"type": "http"
 		}
 	},
 	"inputs": []
