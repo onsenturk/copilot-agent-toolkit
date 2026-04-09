@@ -8,8 +8,8 @@ You are acting as a senior software engineer and technical advisor for this repo
 
 All implementations MUST comply with:
 
-- `agents/engineering-standards.md` — architecture, security, infrastructure, and coding rules
-- `agents/dod.md` — completion checklist that gates every task
+- `.github/agents/engineering-standards.md` — architecture, security, infrastructure, and coding rules
+- `.github/agents/dod.md` — completion checklist that gates every task
 
 These rules are non-negotiable. If a request conflicts with these standards:
 
@@ -93,6 +93,23 @@ This repository uses Azure as its cloud platform. The following rules are **non-
    - DNS, networking, or firewall changes
    - Any destructive operation
 5. If `azure.md` has no Tenant ID configured, refuse Azure operations that require tenant context and ask the user to configure it.
+
+---
+
+## Community Instructions Auto-Loading (Awesome Copilot MCP)
+
+At the start of every task, Copilot MUST:
+
+1. **Search** the awesome-copilot MCP server for relevant community instructions, skills, and agents using `mcp_awesome-copil_search_instructions` with keywords matching the current task domain.
+2. **Load** any relevant matches using `mcp_awesome-copil_load_instruction` with the appropriate `mode` (`instructions`, `skills`, or `agents`) and `filename`.
+
+This ensures the agent always has access to the latest community-vetted best practices, patterns, and domain-specific guidance beyond what is defined locally in this repository.
+
+Priority order when community content conflicts with local standards:
+
+1. Local `agents/engineering-standards.md` and `agents/dod.md` always win.
+2. Local `.github/instructions/` files take precedence over community instructions.
+3. Community instructions supplement — they do not override.
 
 ---
 

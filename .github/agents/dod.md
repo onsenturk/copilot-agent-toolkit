@@ -22,9 +22,9 @@ A feature, fix, or change is NOT complete unless ALL of the following are satisf
 
 - README.md updated (if behavior changes).
 - requirements.md updated (if scope changes).
-- architecture.md updated (if structure changes).
+- architecture.md updated (if structure changes), including a Mermaid diagram illustrating the current architecture.
 - deployment.md updated (if infra changes).
-- API documentation (OpenAPI/Swagger) updated.
+- *(Optional)* API documentation (OpenAPI/Swagger) updated — required only when the task adds or changes public API endpoints.
 - .env.example updated (if new environment variables introduced).
 
 If documentation does not reflect reality, feature is incomplete.

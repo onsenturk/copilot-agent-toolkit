@@ -6,10 +6,10 @@ A lightweight governance repository for AI-assisted software delivery using GitH
 
 This repo defines a **delivery framework** that ensures Copilot-generated changes follow consistent engineering standards. It provides:
 
-- **10 agents** — specialized Copilot personas for implementation, security, DevOps, architecture, and more
-- **6 instruction files** — auto-applied rules for security, markdown, shell scripts, and context engineering
-- **14 skills** — domain-specific knowledge packs for GitHub Actions, CodeQL, Dependabot, Azure pricing, and more
-- **5 workspace MCP servers** — Work IQ, Playwright, Sequential Thinking, Awesome Copilot catalog, and Microsoft Docs
+- **Agents** — specialized Copilot personas for implementation, security, DevOps, architecture, and more
+- **Instruction files** — auto-applied rules for security, markdown, shell scripts, and context engineering
+- **Skills** — domain-specific knowledge packs for GitHub Actions, CodeQL, Dependabot, Azure pricing, and more
+- **Workspace MCP servers** — Work IQ, Playwright, Sequential Thinking, Awesome Copilot catalog, and Microsoft Docs
 - Mandatory engineering rules (`.github/agents/engineering-standards.md`)
 - A strict Definition of Done checklist (`.github/agents/dod.md`)
 - Global Copilot execution instructions (`.github/copilot-instructions.md`)

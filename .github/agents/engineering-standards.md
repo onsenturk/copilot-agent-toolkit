@@ -118,14 +118,14 @@ infra/
 
 ### Web Frontend
 
-- React-based architecture preferred.
-- Tailwind CSS is the default styling system.
+- React-based architecture preferred unless the project specifies otherwise.
+- Tailwind CSS is the default styling system unless the project specifies otherwise.
 - Avoid custom CSS unless strictly necessary.
-- No CSS frameworks other than Tailwind unless justified.
+- No additional CSS frameworks unless justified.
 
 ### Mobile
 
-- Expo (React Native + Expo) is the default mobile platform.
+- Expo (React Native + Expo) is the default mobile platform unless the project specifies otherwise.
 - Single codebase for iOS and Android.
 - Native modules only when absolutely required.
 - OTA updates preferred when possible.
@@ -185,11 +185,11 @@ Every project must contain:
 
 - README.md
 - requirements.md
-- architecture.md
+- architecture.md (must include a Mermaid diagram illustrating the current architecture)
 - deployment.md
 - .env.example
 - Infrastructure-as-Code (Bicep/Terraform)
-- API documentation (OpenAPI/Swagger)
+- *(Optional)* API documentation (OpenAPI/Swagger) — required only when the project exposes public API endpoints
 
 Documentation must reflect current behavior.
 
