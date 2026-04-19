@@ -212,6 +212,42 @@ Use `--skip-extensions` to skip extension installation.
 3. (Optional) Start Docker Desktop for the Awesome Copilot MCP server
 4. Start chatting — try `@implementation-template`, `@dod`, `@se-security-reviewer`
 
+## Bootstrapping a new project from this toolkit
+
+Use [scripts/pull-toolkit.ps1](scripts/pull-toolkit.ps1) (or [scripts/pull-toolkit.sh](scripts/pull-toolkit.sh))
+to copy `.github/` and `.vscode/` from this repo into another project. Re-run it any time
+you want the latest version — local files are overwritten.
+
+**One-liner from a fresh project root:**
+
+```powershell
+# Windows / PowerShell
+iwr https://raw.githubusercontent.com/onsenturk/copilot-agent-toolkit/main/scripts/pull-toolkit.ps1 | iex
+```
+
+```bash
+# macOS / Linux (requires jq)
+curl -sSL https://raw.githubusercontent.com/onsenturk/copilot-agent-toolkit/main/scripts/pull-toolkit.sh | bash
+```
+
+**Pin to a specific version:**
+
+```powershell
+pwsh ./scripts/pull-toolkit.ps1 -Ref v1.2.0
+./scripts/pull-toolkit.sh --ref v1.2.0
+```
+
+**Preview without writing:**
+
+```powershell
+pwsh ./scripts/pull-toolkit.ps1 -DryRun
+./scripts/pull-toolkit.sh --dry-run
+```
+
+The pulled commit SHA is recorded in `.github/.toolkit-version` so you can tell at a glance
+how fresh your local copy is. Set `$env:GITHUB_TOKEN` (or `GITHUB_TOKEN`) to avoid the
+unauthenticated GitHub API rate limit.
+
 ## How to use it
 
 1. Use `@implementation-template` to scope new features, bug fixes, or refactors.
