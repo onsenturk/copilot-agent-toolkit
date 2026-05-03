@@ -60,14 +60,14 @@ available automatically when you open the repo:
 │   │   ├── implementation-template.agent.md # New feature / bug fix / refactor template
 │   │   ├── marketing.agent.md            # Monetization modeling agent
 │   │   ├── repo-architect.agent.md
+│   │   ├── search-ai-optimization-expert.agent.md
 │   │   ├── se-security-reviewer.agent.md
 │   │   └── ux.agent.md                   # UI/UX design agent
 │   ├── instructions/
 │   │   ├── agent-safety.instructions.md
 │   │   ├── agents.instructions.md
 │   │   ├── bicep.instructions.md
-│   │   ├── context-engineering.instructions.md
-│   │   ├── markdown-gfm.instructions.md
+│   │   ├── context-engineering.instructions.md    │   ├── draw-io.instructions.md│   │   ├── markdown-gfm.instructions.md
 │   │   ├── powershell.instructions.md
 │   │   ├── security-and-owasp.instructions.md
 │   │   └── shell.instructions.md
@@ -82,11 +82,13 @@ available automatically when you open the repo:
 │       ├── create-implementation-plan/
 │       ├── creating-oracle-to-postgres-master-migration-plan/
 │       ├── dependabot/
+│       ├── draw-io-diagram-generator/
 │       ├── foundry-agent-sync/
 │       ├── git-commit/
 │       ├── github-issues/
 │       ├── gtm-0-to-1-launch/
-│       └── secret-scanning/
+│       ├── secret-scanning/
+│       └── web-design-reviewer/
 ├── .vscode/
 │   ├── extensions.json                  # Recommended VS Code extensions
 │   └── mcp.json                         # Workspace MCP server configuration
@@ -94,7 +96,7 @@ available automatically when you open the repo:
 └── scripts/
     ├── init-setup.ps1                   # Windows setup script
     ├── init-setup.sh                    # macOS/Linux setup script
-    ├── install-global.ps1               # Install user-level MCP servers
+    ├── install-global.ps1               # Install agents/skills/instructions as user-level (travels across all repos)
     └── sync-skills.ps1                  # Sync skills from github/awesome-copilot
 ```
 
@@ -112,6 +114,7 @@ available automatically when you open the repo:
 | **ADR Generator** | `@adr-generator` | Architectural Decision Records with structured formatting |
 | **DevOps Expert** | `@devops-expert` | DevOps infinity loop — Plan, Code, Build, Test, Release, Deploy, Operate, Monitor |
 | **Repo Architect** | `@repo-architect` | Validate/scaffold agentic project structures and Copilot customization files |
+| **Search & AI Optimization Expert** | `@search-ai-optimization-expert` | SEO + AEO + GEO content, meta tags, JSON-LD, sitemap/robots, AI-discoverable landing pages |
 
 ## Skills
 
@@ -123,6 +126,8 @@ Skills are auto-loaded from `.github/skills/` and triggered by matching prompts:
 | `git-commit` | Committing changes — conventional commits, intelligent staging, auto-generated messages |
 | `github-issues` | Creating, updating, or managing GitHub issues (bug reports, features, labels, milestones) |
 | `architecture-blueprint-generator` | Generating architecture documentation, detecting patterns, creating visual diagrams |
+| `draw-io-diagram-generator` | Generating or editing `.drawio` / `.drawio.svg` diagrams (architecture, flowchart, sequence, ER, UML, network) |
+| `web-design-reviewer` | Visual QA of local or deployed sites — multi-viewport screenshots, responsive/accessibility/visual fixes at source |
 | `codeql` | Setting up CodeQL code scanning, GitHub Actions workflows for SAST, or CodeQL CLI |
 | `dependabot` | Configuring `dependabot.yml`, dependency update strategies, grouped updates |
 | `secret-scanning` | Enabling secret scanning, push protection, custom patterns, or remediating alerts |
@@ -171,6 +176,7 @@ Instruction files in `.github/instructions/` are auto-applied based on `applyTo`
 | `agents` | `*.agent.md` files | Meta-instructions for creating custom agent files |
 | `bicep` | `*.bicep`, `*.bicepparam` files | Bicep authoring standards, including Azure Verified Modules (AVM) usage |
 | `context-engineering` | All files | Structuring code for maximum Copilot effectiveness |
+| `draw-io` | `*.drawio*` files | draw.io / mxGraph XML standards — mandatory Azure stencil library for Azure architectures |
 | `markdown-gfm` | `*.md` files | GitHub-flavored markdown formatting rules |
 | `powershell` | `*.ps1`, `*.psm1`, `*.psd1` files | PowerShell scripting best practices |
 | `security-and-owasp` | All files | OWASP Top 10 secure coding practices |
@@ -211,6 +217,16 @@ Use `--skip-extensions` to skip extension installation.
 2. (Optional) Sign in to Azure CLI: `az login`
 3. (Optional) Start Docker Desktop for the Awesome Copilot MCP server
 4. Start chatting — try `@implementation-template`, `@dod`, `@se-security-reviewer`
+
+### Install agents/skills globally (user-level)
+
+Per the [VS 2026 April 2026 update](https://github.blog/changelog/2026-04-30-github-copilot-in-visual-studio-april-update/), custom agents are now discovered from `%USERPROFILE%/.github/agents/` and skills from `~/.agents/skills/` — so you don't need to copy them into every repo.
+
+```powershell
+.\scripts\install-global.ps1 -Force
+```
+
+This copies all agents to both `%USERPROFILE%/.github/agents/` (VS 2026+) and the legacy VS Code prompts folder, and copies all skills to `~/.agents/skills/`. Re-run after pulling toolkit updates.
 
 ## Bootstrapping a new project from this toolkit
 

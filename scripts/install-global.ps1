@@ -8,6 +8,7 @@
     Copies:
       - .github/instructions/*.instructions.md → VS Code user prompts folder
       - .github/agents/*.agent.md             → VS Code user prompts folder
+                                              → %USERPROFILE%/.github/agents/  (VS 2026+ user-level custom agents)
       - .github/skills/*/                     → ~/.agents/skills/
       - .github/copilot-instructions.md       → VS Code user setting
 
@@ -34,6 +35,7 @@ if (-not (Test-Path (Join-Path $repoRoot '.github'))) {
 
 $userPromptsFolder = Join-Path $env:APPDATA 'Code\User\prompts'
 $userSkillsFolder  = Join-Path $HOME '.agents\skills'
+$userAgentsFolder  = Join-Path $HOME '.github\agents'  # VS 2026+ user-level custom agents
 
 $srcInstructions   = Join-Path $repoRoot '.github\instructions'
 $srcAgents         = Join-Path $repoRoot '.github\agents'
@@ -90,11 +92,14 @@ else {
     Write-Warning "No instructions folder found at $srcInstructions"
 }
 
-# ---------- 2. Agents → user prompts ----------
+# ---------- 2. Agents → user prompts AND ~/.github/agents ----------
 Write-Host "`n=== Installing agent files ===" -ForegroundColor Cyan
 if (Test-Path $srcAgents) {
     foreach ($file in Get-ChildItem -Path $srcAgents -Filter '*.agent.md') {
+        # Legacy: VS Code prompts folder
         Copy-FileSafe -Source $file.FullName -Destination (Join-Path $userPromptsFolder $file.Name)
+        # VS 2026+: user-level custom agents (travel across all projects)
+        Copy-FileSafe -Source $file.FullName -Destination (Join-Path $userAgentsFolder $file.Name)
     }
 }
 else {
@@ -116,6 +121,7 @@ else {
 # ---------- 4. Summary ----------
 Write-Host "`n=== Installation complete ===" -ForegroundColor Green
 Write-Host "  User prompts:  $userPromptsFolder"
+Write-Host "  User agents:   $userAgentsFolder"
 Write-Host "  User skills:   $userSkillsFolder"
 Write-Host ""
 Write-Host "Remaining manual steps:" -ForegroundColor Yellow
