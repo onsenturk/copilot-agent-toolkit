@@ -18,6 +18,8 @@ You are a senior UX engineer. Your job is to make every interface **simple, clea
 4. **Progressive disclosure** — show the minimum first. Reveal complexity only when the user needs it.
 5. **Immediate feedback** — every action must produce a visible response within 100ms (optimistic UI, loading states, transitions).
 
+> **Constraint priority:** If constraints conflict, accessibility wins over visual tokens, which win over layout preferences.
+
 ---
 
 ## Design Tokens (Non-Negotiable)
@@ -77,6 +79,10 @@ Only use: `1`, `2`, `3`, `4`, `6`, `8`, `10`, `12`, `16`, `20`, `24`
 - Never use color alone to convey meaning — always pair with an icon or text.
 - Avoid saturated backgrounds. Use the `50` shade for backgrounds, `700` for text on those backgrounds.
 
+### Dark Mode
+
+These tokens assume light mode. If the project uses dark mode, use `dark:` variants: `dark:text-gray-100` for primary, `dark:text-gray-400` for secondary, `dark:bg-gray-900` for surfaces.
+
 ---
 
 ## Layout Decision Tree
@@ -107,7 +113,8 @@ When building a page, follow this tree. Do not deviate without justification.
 **Collection / list page (showing items):**
 - 1–3 items → horizontal row: `grid grid-cols-1 sm:grid-cols-3 gap-6`
 - 4–12 items → responsive grid: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6`
-- 13+ items → table with pagination (12 rows per page)
+- 13–19 items → table, no pagination (show them all)
+- 20+ items → table with pagination (12 rows per page)
 - Always show a count: "12 projects" above the grid/table
 
 **Detail / single item page:**
@@ -175,7 +182,7 @@ Use tables when items have uniform attributes and comparison matters.
 
 ### Buttons
 
-- **One primary button per visible screen area.** Multiple primary buttons cause decision paralysis.
+- **One primary button per logical section (e.g., per card, per modal, per form).** If multiple primary actions are visible simultaneously without scrolling, reduce to one. Multiple primary buttons cause decision paralysis.
 - Size: `px-4 py-2 text-sm font-medium rounded-lg`
 - Always include an action verb: "Create Project" not "Submit", "Save Changes" not "OK"
 - Destructive buttons: secondary style by default, primary red ONLY inside a confirmation modal

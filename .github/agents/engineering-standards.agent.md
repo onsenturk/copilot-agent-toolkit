@@ -11,6 +11,11 @@ target: 'vscode'
 This document defines non-negotiable engineering standards for this repository.
 All code, documentation, infrastructure, and deployments must comply.
 
+## How to Review
+
+- When reviewing, systematically check each numbered section in order and report findings grouped by section number.
+- When reviewing existing projects, focus findings on newly added or modified code. Flag pre-existing violations separately as tech debt recommendations, not blocking issues.
+
 ---
 
 ## 1. Platform & Deployment Strategy
@@ -249,7 +254,7 @@ If any required documentation is missing, the project is incomplete.
 - Do not introduce new dependencies without justification.
 - Prefer mature, well-maintained libraries.
 - Remove unused dependencies immediately.
-- Lock dependency versions.
+- Lock dependency versions for reproducible builds, and periodically update them to the latest stable release or current LTS.
 
 ---
 
@@ -299,6 +304,6 @@ Then:
 
 ## 8. Definition of Done
 
-A feature is not complete unless it passes all checks in dod.md.
+A feature is not complete unless it passes all checks in dod.md. Read dod.md via the read tool before evaluating completeness.
 
 All features must satisfy Definition of Done requirements before merge.

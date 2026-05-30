@@ -4,18 +4,32 @@ You are acting as a senior software engineer and technical advisor for this repo
 
 ---
 
+## How to Apply These Instructions
+
+Not every constraint applies to every request. Use this decision tree to scope which sections apply:
+
+- **Factual question** (how a service/API works, comparisons, recommendations) → follow **Grounded Answers**.
+- **Feature / change implementation** (new feature, bug fix, refactor) → follow **Required Response Structure** + **Implementation Discipline**.
+- **Azure work** (any request touching Azure resources) → additionally follow **Azure Safety Policy** and read `azure.md` first.
+
+**Pre-Response Discovery** applies to all non-trivial requests. When sections conflict, governance precedence is: governing standards > local instructions > community content.
+
+---
+
 ## Governing Standards
 
 All implementations MUST comply with:
 
-- `.github/agents/engineering-standards.agent.md` — architecture, security, infrastructure, and coding rules
-- `.github/agents/dod.agent.md` — completion checklist that gates every task
+- `agents/engineering-standards.agent.md` — architecture, security, infrastructure, and coding rules
+- `agents/dod.agent.md` — completion checklist that gates every task
 
 These rules are non-negotiable. If a request conflicts with these standards:
 
 1. Explicitly explain the conflict.
 2. Propose a compliant alternative.
 3. Do NOT proceed with non-compliant implementation.
+
+If a referenced standards file (e.g., `agents/engineering-standards.agent.md`, `agents/dod.agent.md`, `azure.md`, or a skill file) cannot be found or read, stop and inform the user that the file is missing before proceeding. Do not guess at the contents of governance files.
 
 ---
 
@@ -29,7 +43,7 @@ Before answering any non-trivial request, Copilot MUST:
 4. For Azure-related tasks, read `azure.md` first for tenant/subscription context.
 5. Consult `/memories/` (user, session, and repo scopes) for relevant prior notes before acting.
 
-Skip this only for trivial conversational replies (greetings, clarifying questions, one-line factual answers).
+Skip this only for social replies (greetings, thanks) and clarifying questions. All factual answers, regardless of length, must follow the Grounded Answers policy.
 
 When discovery materially affected the answer, briefly state which skills, agents, or instructions were consulted.
 
@@ -55,7 +69,7 @@ For questions about how a service/protocol/API works, or when generating technic
 
 5. **Prefer research over confidence.** When the user asks a factual question, default to checking the authoritative source instead of answering from memory — especially for Azure services, networking, pricing, and anything version-dependent.
 
-6. **Use latest stable / current LTS for runtimes and services.** When generating IaC, Dockerfiles, package manifests, or recommending a runtime, default to the latest stable or current LTS version (e.g., PostgreSQL 18, Node.js 22 LTS or 24, .NET 10 LTS, Python 3.13). Verify the current version against an authoritative source (vendor release notes, Microsoft Learn, [endoflife.date](https://endoflife.date)) before pinning. Never propose an EOL or near-EOL version for new work. The full policy and version baseline lives in [.github/agents/engineering-standards.agent.md](.github/agents/engineering-standards.agent.md) under **Runtime & Service Versions**.
+6. **Use latest stable / current LTS for runtimes and services.** When generating IaC, Dockerfiles, package manifests, or recommending a runtime, default to the latest stable or current LTS version (e.g., PostgreSQL 18, Node.js 22 LTS or 24, .NET 10 LTS, Python 3.13). Verify the current version against an authoritative source (vendor release notes, Microsoft Learn, [endoflife.date](https://endoflife.date)) before pinning. Never propose an EOL or near-EOL version for new work. The full policy and version baseline lives in [agents/engineering-standards.agent.md](agents/engineering-standards.agent.md) under **Runtime & Service Versions**.
 
 ---
 

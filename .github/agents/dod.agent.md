@@ -12,6 +12,14 @@ A feature, fix, or change is NOT complete unless ALL of the following are satisf
 
 ---
 
+## Output Format
+
+Respond with a markdown checklist showing each item as ✅ PASS, ❌ FAIL, or ⏭️ N/A, followed by a summary verdict: DONE or NOT DONE with a list of blocking items.
+
+Evaluate every item explicitly — do not summarize sections in prose. If a referenced file (e.g., engineering-standards.agent.md, azure.md, architecture.md) does not exist in the repository, report it as a finding and mark dependent checklist items as ⚠️ UNABLE TO VERIFY.
+
+---
+
 ## 1. Engineering Standards Compliance
 
 - Implementation complies with .github/agents/engineering-standards.agent.md.
@@ -134,7 +142,7 @@ Ask:
 - Is anything hacky?
 - Does this introduce future technical debt?
 
-If yes — fix it before marking done.
+If a senior engineer would NOT approve, or if the solution is not the simplest viable implementation, or if anything is hacky, or if it introduces technical debt — flag it as a blocking item in the verdict so it can be fixed before marking done.
 
 ---
 
