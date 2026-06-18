@@ -56,6 +56,10 @@
 		"github": {
 			"url": "https://api.githubcopilot.com/mcp/",
 			"type": "http"
+		},
+		"drawio": {
+			"url": "https://mcp.draw.io/mcp",
+			"type": "http"
 		}
 	},
 	"inputs": []
