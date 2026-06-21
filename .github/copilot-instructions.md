@@ -98,6 +98,8 @@ Skills are loaded automatically from `.github/skills/`. Use the matching skill w
 | Skill | Trigger |
 |---|---|
 | `create-implementation-plan` | Planning a new feature, refactor, package upgrade, or design change |
+| `rubber-duck` | Talking through a bug/design out loud — reflective questions, no solving, until the user reaches their own insight |
+| `grill-me` | Adversarial Socratic interrogation of an idea/design/plan/PR — challenge assumptions and edge cases before committing |
 | `git-commit` | Committing changes — uses conventional commits, intelligent staging, auto-generated messages |
 | `github-issues` | Creating, updating, or managing GitHub issues (bug reports, features, labels, milestones) |
 | `architecture-blueprint-generator` | Generating architecture documentation, detecting patterns, creating visual diagrams |

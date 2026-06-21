@@ -86,7 +86,9 @@ available automatically when you open the repo:
 │       ├── foundry-agent-sync/
 │       ├── git-commit/
 │       ├── github-issues/
+│       ├── grill-me/
 │       ├── gtm-0-to-1-launch/
+│       ├── rubber-duck/
 │       ├── secret-scanning/
 │       └── web-design-reviewer/
 ├── .vscode/
@@ -123,6 +125,8 @@ Skills are auto-loaded from `.github/skills/` and triggered by matching prompts:
 | Skill | Trigger |
 |---|---|
 | `create-implementation-plan` | Planning a new feature, refactor, package upgrade, or design change |
+| `rubber-duck` | Talking through a bug/design out loud — reflective questions, no solving, until you reach your own insight |
+| `grill-me` | Adversarial Socratic interrogation of an idea/design/plan/PR — challenge assumptions and edge cases before committing |
 | `git-commit` | Committing changes — conventional commits, intelligent staging, auto-generated messages |
 | `github-issues` | Creating, updating, or managing GitHub issues (bug reports, features, labels, milestones) |
 | `architecture-blueprint-generator` | Generating architecture documentation, detecting patterns, creating visual diagrams |
