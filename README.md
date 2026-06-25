@@ -94,11 +94,21 @@ available automatically when you open the repo:
 ├── .vscode/
 │   ├── extensions.json                  # Recommended VS Code extensions
 │   └── mcp.json                         # Workspace MCP server configuration
+├── .claude-plugin/
+│   ├── marketplace.json                 # Agent plugin marketplace catalog (one click install)
+│   └── plugin.json                      # Claude format plugin manifest
+├── plugin.json                          # Agent plugin manifest (skills, agents, MCP) for VS Code + Copilot CLI
+├── .mcp.json                            # MCP servers for plugin consumers (mirrors .vscode/mcp.json)
+├── AGENTS.md                            # Cross tool always on rules (VS Code + Copilot CLI)
+├── CLAUDE.md                            # Cross tool always on pointer (Claude Code)
 ├── azure.md                             # Azure tenant/subscription context (edit after fork)
 └── scripts/
     ├── init-setup.ps1                   # Windows setup script
     ├── init-setup.sh                    # macOS/Linux setup script
-    ├── install-global.ps1               # Install agents/skills/instructions as user-level (travels across all repos)
+    ├── install-global.ps1               # Install agents/skills/instructions to ~/.copilot (Windows)
+    ├── install-global.sh                # Install agents/skills/instructions to ~/.copilot (macOS/Linux)
+    ├── pull-toolkit.ps1                 # Copy .github/ + .vscode/ into another repo (Windows)
+    ├── pull-toolkit.sh                  # Copy .github/ + .vscode/ into another repo (macOS/Linux)
     └── sync-skills.ps1                  # Sync skills from github/awesome-copilot
 ```
 
@@ -222,15 +232,32 @@ Use `--skip-extensions` to skip extension installation.
 3. (Optional) Start Docker Desktop for the Awesome Copilot MCP server
 4. Start chatting — try `@implementation-template`, `@dod`, `@se-security-reviewer`
 
-### Install agents/skills globally (user-level)
+### Install agents/skills/instructions globally (user level)
 
-Per the [VS 2026 April 2026 update](https://github.blog/changelog/2026-04-30-github-copilot-in-visual-studio-april-update/), custom agents are now discovered from `%USERPROFILE%/.github/agents/` and skills from `~/.agents/skills/` — so you don't need to copy them into every repo.
+Install the toolkit into your user profile once and it applies across every workspace, with no per repo copying. VS Code and GitHub Copilot CLI read the `~/.copilot` locations; skills are also mirrored to the Claude Code location.
 
+**Windows (PowerShell):**
 ```powershell
-.\scripts\install-global.ps1 -Force
+.\scripts\install-global.ps1 -Force            # install / overwrite
+.\scripts\install-global.ps1 -DryRun           # preview without writing
 ```
 
-This copies all agents to both `%USERPROFILE%/.github/agents/` (VS 2026+) and the legacy VS Code prompts folder, and copies all skills to `~/.agents/skills/`. Re-run after pulling toolkit updates.
+**macOS / Linux (Bash):**
+```bash
+chmod +x scripts/install-global.sh
+./scripts/install-global.sh --force            # install / overwrite
+./scripts/install-global.sh --dry-run          # preview without writing
+```
+
+It copies:
+
+| Item | Destination | Read by |
+|---|---|---|
+| `*.instructions.md` | `~/.copilot/instructions/` | VS Code, Copilot CLI |
+| `*.agent.md` | `~/.copilot/agents/` | VS Code, Copilot CLI |
+| `skills/*` | `~/.copilot/skills/`, `~/.claude/skills/`, `~/.agents/skills/` | VS Code, Copilot CLI, Claude Code |
+
+Instructions keep their `applyTo` globs and apply across all your repos. Enable [Settings Sync](https://code.visualstudio.com/docs/configure/settings-sync) (Prompts and Instructions) to propagate user instructions across your machines. Re-run after pulling toolkit updates. MCP servers are not installed this way; use the agent plugin route below.
 
 ## Bootstrapping a new project from this toolkit
 
@@ -267,6 +294,45 @@ pwsh ./scripts/pull-toolkit.ps1 -DryRun
 The pulled commit SHA is recorded in `.github/.toolkit-version` so you can tell at a glance
 how fresh your local copy is. Set `$env:GITHUB_TOKEN` (or `GITHUB_TOKEN`) to avoid the
 unauthenticated GitHub API rate limit.
+
+## Install routes at a glance
+
+Three ways to use the toolkit across your repos. They are not mutually exclusive.
+
+| Route | Best for | Updates | Stability |
+|---|---|---|---|
+| Per user script ([install-global](scripts/install-global.ps1)) | Everything in every repo on your machine | Re-run the script | GA |
+| Per project copy ([pull-toolkit](scripts/pull-toolkit.ps1)) | Committing the toolkit into one repo | Re-run the script | GA |
+| Agent plugin (below) | One click cross tool install with auto update | Automatic (every 24h) | Preview |
+
+## Install as an agent plugin (cross tool, Preview)
+
+The toolkit is also packaged as an [agent plugin](https://code.visualstudio.com/docs/copilot/customization/agent-plugins), so a single install gives you its skills, agents, and MCP servers, with automatic updates. The same package works in VS Code, GitHub Copilot CLI, and Claude Code. Agent Plugins is a Preview feature in VS Code, gated by the `chat.plugins.enabled` setting (sometimes managed by your organization).
+
+**VS Code (install from source):** run **Chat: Install Plugin From Source** from the Command Palette and enter the repository URL:
+
+```text
+https://github.com/onsenturk/copilot-agent-toolkit
+```
+
+Or register it as a marketplace in `settings.json` to browse and update it from the Extensions view (search `@agentPlugins`):
+
+```json
+"chat.plugins.marketplaces": [
+  "onsenturk/copilot-agent-toolkit"
+]
+```
+
+**Claude Code:**
+
+```shell
+/plugin marketplace add onsenturk/copilot-agent-toolkit
+/plugin install copilot-agent-toolkit@copilot-agent-toolkit
+```
+
+**GitHub Copilot CLI:** install the plugin from the same repository. VS Code also discovers plugins installed by the CLI under `~/.copilot/installed-plugins/`.
+
+Plugins refresh automatically every 24 hours, or on demand via **Extensions: Check for Extension Updates**. Note: a plugin carries skills, agents, and MCP servers, but not `*.instructions.md` files. For the auto applied instructions, use the user level install above or `pull-toolkit`.
 
 ## How to use it
 

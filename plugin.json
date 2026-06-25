@@ -1,0 +1,11 @@
+{
+  "name": "copilot-agent-toolkit",
+  "description": "Governance toolkit for AI-assisted software delivery with GitHub Copilot. Bundles custom agents (implementation, security review, DevOps, architecture, UX), agent skills (Azure pricing and cost, CodeQL, Dependabot, diagrams, GTM, and more), and MCP servers (Microsoft Docs, Azure, GitHub, Playwright, draw.io).",
+  "version": "1.0.0",
+  "author": {
+    "name": "onsenturk"
+  },
+  "skills": ".github/skills",
+  "agents": ".github/agents",
+  "mcpServers": ".mcp.json"
+}

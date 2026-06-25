@@ -1,0 +1,23 @@
+{
+  "name": "copilot-agent-toolkit",
+  "owner": {
+    "name": "onsenturk"
+  },
+  "description": "Governance toolkit for AI-assisted delivery with GitHub Copilot: custom agents, agent skills, instructions, and MCP servers.",
+  "plugins": [
+    {
+      "name": "copilot-agent-toolkit",
+      "source": "./",
+      "description": "Custom agents, agent skills, and MCP servers for consistent, secure, well-documented Copilot delivery.",
+      "keywords": [
+        "copilot",
+        "agents",
+        "skills",
+        "governance",
+        "security",
+        "azure",
+        "devops"
+      ]
+    }
+  ]
+}

@@ -1,26 +1,38 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Installs copilot-agent-toolkit instructions, agents, and skills as user-level
-    VS Code Copilot customizations so they apply to every workspace.
+    Installs copilot-agent-toolkit instructions, agents, and skills as user level
+    customizations so they apply to every workspace and across tools.
 
 .DESCRIPTION
-    Copies:
-      - .github/instructions/*.instructions.md → VS Code user prompts folder
-      - .github/agents/*.agent.md             → VS Code user prompts folder
-                                              → %USERPROFILE%/.github/agents/  (VS 2026+ user-level custom agents)
-      - .github/skills/*/                     → ~/.agents/skills/
-      - .github/copilot-instructions.md       → VS Code user setting
+    Copies into the documented GA user profile locations:
+      - .github/instructions/*.instructions.md  ->  ~/.copilot/instructions/
+      - .github/agents/*.agent.md               ->  ~/.copilot/agents/
+      - .github/skills/*/                       ->  ~/.copilot/skills/
+                                                ->  ~/.claude/skills/
+                                                ->  ~/.agents/skills/
 
-    MCP servers from .vscode/mcp.json must be added to VS Code User Settings
-    manually (or via `code --edit-settings`), since they require merging.
+    ~/.copilot is read by VS Code and GitHub Copilot CLI. ~/.claude is read by
+    Claude Code. ~/.agents is an additional skills location some tools honor.
+
+    Instructions keep their applyTo globs and apply across every workspace.
+    Enable Settings Sync (Prompts and Instructions) to propagate user
+    instructions across your machines.
+
+    MCP servers are not installed by this script. Install the toolkit as an
+    agent plugin (see README) to get its MCP servers, or merge .vscode/mcp.json
+    into your user settings manually.
 
 .PARAMETER Force
-    Overwrite existing files without prompting.
+    Overwrite existing files and folders without prompting.
+
+.PARAMETER DryRun
+    Show what would be copied without writing anything.
 #>
 [CmdletBinding()]
 param(
-    [switch]$Force
+    [switch]$Force,
+    [switch]$DryRun
 )
 
 Set-StrictMode -Version Latest
@@ -33,39 +45,53 @@ if (-not (Test-Path (Join-Path $repoRoot '.github'))) {
     throw "Could not locate .github folder relative to script (expected at $repoRoot\.github)."
 }
 
-$userPromptsFolder = Join-Path $env:APPDATA 'Code\User\prompts'
-$userSkillsFolder  = Join-Path $HOME '.agents\skills'
-$userAgentsFolder  = Join-Path $HOME '.github\agents'  # VS 2026+ user-level custom agents
+$copilotInstructionsFolder = Join-Path $HOME '.copilot\instructions'
+$copilotAgentsFolder       = Join-Path $HOME '.copilot\agents'
 
-$srcInstructions   = Join-Path $repoRoot '.github\instructions'
-$srcAgents         = Join-Path $repoRoot '.github\agents'
-$srcSkills         = Join-Path $repoRoot '.github\skills'
+# Skills are an open standard; mirror them to every tool's personal location.
+$skillTargets = @(
+    (Join-Path $HOME '.copilot\skills'),
+    (Join-Path $HOME '.claude\skills'),
+    (Join-Path $HOME '.agents\skills')
+)
+
+$srcInstructions = Join-Path $repoRoot '.github\instructions'
+$srcAgents       = Join-Path $repoRoot '.github\agents'
+$srcSkills       = Join-Path $repoRoot '.github\skills'
 
 # ---------- helpers ----------
 function Copy-FileSafe {
     param(
-        [string]$Source,
-        [string]$Destination
+        [Parameter(Mandatory = $true)][string]$Source,
+        [Parameter(Mandatory = $true)][string]$Destination
     )
+    if ($DryRun) {
+        Write-Host "  [dry-run] would copy  ->  $Destination"
+        return
+    }
     $destDir = Split-Path -Parent $Destination
     if (-not (Test-Path $destDir)) {
         New-Item -ItemType Directory -Path $destDir -Force | Out-Null
     }
     if ((Test-Path $Destination) -and -not $Force) {
-        Write-Warning "Skipping (exists): $Destination  — use -Force to overwrite"
+        Write-Warning "Skipping (exists): $Destination  (use -Force to overwrite)"
         return
     }
     Copy-Item -Path $Source -Destination $Destination -Force
-    Write-Host "  Copied → $Destination"
+    Write-Host "  copied  ->  $Destination"
 }
 
 function Copy-DirectorySafe {
     param(
-        [string]$Source,
-        [string]$Destination
+        [Parameter(Mandatory = $true)][string]$Source,
+        [Parameter(Mandatory = $true)][string]$Destination
     )
+    if ($DryRun) {
+        Write-Host "  [dry-run] would copy  ->  $Destination"
+        return
+    }
     if ((Test-Path $Destination) -and -not $Force) {
-        Write-Warning "Skipping (exists): $Destination  — use -Force to overwrite"
+        Write-Warning "Skipping (exists): $Destination  (use -Force to overwrite)"
         return
     }
     # Remove existing target before recursive copy to avoid Copy-Item nesting
@@ -78,40 +104,38 @@ function Copy-DirectorySafe {
         New-Item -ItemType Directory -Path $parent -Force | Out-Null
     }
     Copy-Item -Path $Source -Destination $Destination -Recurse -Force
-    Write-Host "  Copied → $Destination"
+    Write-Host "  copied  ->  $Destination"
 }
 
-# ---------- 1. Instructions → user prompts ----------
+# ---------- 1. Instructions -> ~/.copilot/instructions ----------
 Write-Host "`n=== Installing instruction files ===" -ForegroundColor Cyan
 if (Test-Path $srcInstructions) {
     foreach ($file in Get-ChildItem -Path $srcInstructions -Filter '*.instructions.md') {
-        Copy-FileSafe -Source $file.FullName -Destination (Join-Path $userPromptsFolder $file.Name)
+        Copy-FileSafe -Source $file.FullName -Destination (Join-Path $copilotInstructionsFolder $file.Name)
     }
 }
 else {
     Write-Warning "No instructions folder found at $srcInstructions"
 }
 
-# ---------- 2. Agents → user prompts AND ~/.github/agents ----------
+# ---------- 2. Agents -> ~/.copilot/agents ----------
 Write-Host "`n=== Installing agent files ===" -ForegroundColor Cyan
 if (Test-Path $srcAgents) {
     foreach ($file in Get-ChildItem -Path $srcAgents -Filter '*.agent.md') {
-        # Legacy: VS Code prompts folder
-        Copy-FileSafe -Source $file.FullName -Destination (Join-Path $userPromptsFolder $file.Name)
-        # VS 2026+: user-level custom agents (travel across all projects)
-        Copy-FileSafe -Source $file.FullName -Destination (Join-Path $userAgentsFolder $file.Name)
+        Copy-FileSafe -Source $file.FullName -Destination (Join-Path $copilotAgentsFolder $file.Name)
     }
 }
 else {
     Write-Warning "No agents folder found at $srcAgents"
 }
 
-# ---------- 3. Skills → ~/.agents/skills ----------
+# ---------- 3. Skills -> ~/.copilot, ~/.claude, ~/.agents ----------
 Write-Host "`n=== Installing skill folders ===" -ForegroundColor Cyan
 if (Test-Path $srcSkills) {
     foreach ($skillDir in Get-ChildItem -Path $srcSkills -Directory) {
-        $dest = Join-Path $userSkillsFolder $skillDir.Name
-        Copy-DirectorySafe -Source $skillDir.FullName -Destination $dest
+        foreach ($target in $skillTargets) {
+            Copy-DirectorySafe -Source $skillDir.FullName -Destination (Join-Path $target $skillDir.Name)
+        }
     }
 }
 else {
@@ -120,12 +144,13 @@ else {
 
 # ---------- 4. Summary ----------
 Write-Host "`n=== Installation complete ===" -ForegroundColor Green
-Write-Host "  User prompts:  $userPromptsFolder"
-Write-Host "  User agents:   $userAgentsFolder"
-Write-Host "  User skills:   $userSkillsFolder"
+Write-Host "  Instructions: $copilotInstructionsFolder"
+Write-Host "  Agents:       $copilotAgentsFolder"
+Write-Host "  Skills:       $($skillTargets -join ', ')"
 Write-Host ""
-Write-Host "Remaining manual steps:" -ForegroundColor Yellow
-Write-Host "  1. MCP servers: Open VS Code User Settings (JSON) and merge"
-Write-Host "     the servers from .vscode/mcp.json into 'mcp.servers'."
-Write-Host "  2. Restart VS Code to pick up the new files."
+Write-Host "Next steps:" -ForegroundColor Yellow
+Write-Host "  1. Restart VS Code (or your agent) to pick up the new files."
+Write-Host "  2. Enable Settings Sync (Prompts and Instructions) to sync user"
+Write-Host "     instructions across your machines."
+Write-Host "  3. For MCP servers, install the toolkit as an agent plugin (README)."
 Write-Host ""
